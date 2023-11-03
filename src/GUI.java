@@ -11,6 +11,7 @@ public class GUI
         //the program terminate when the use press the close button
         theStudentSystem.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         theStudentSystem.setVisible(true); // Display frame
+        //kenneth hi
     }
 }
 
