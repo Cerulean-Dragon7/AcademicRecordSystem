@@ -19,7 +19,7 @@ public class LoginPanel extends JPanel {
         setVisible(true);
     }
 
-    private void addComponents(){
+    private void addComponents(){   //for add title name
         this.setLayout(new BorderLayout());
         this.add(componentsPanel,BorderLayout.CENTER);
 
@@ -27,7 +27,7 @@ public class LoginPanel extends JPanel {
         icon.setFont(new Font("Arial", Font.BOLD, 30));
         this.add(icon, BorderLayout.NORTH);
     }
-    private void placeComponents() {
+    private void placeComponents() {    //add center components
 
         componentsPanel = new JPanel(new GridBagLayout());
 
@@ -78,9 +78,9 @@ public class LoginPanel extends JPanel {
                 String user = userText.getText();
                 String password = new String(passwordText.getPassword());
                 System.out.println("Username: " + user + " Password: " + password);
-                //GUIFrame.currentState = 1;
-                //GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(LoginPanel.this);
-                //guiFrame.changePanel();
+                GUIFrame.currentState = 1;
+                GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(LoginPanel.this);
+                guiFrame.changePanel();
             }
         });
 
