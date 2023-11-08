@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LoginPanel extends JPanel {
-    private static final int LOGINGUI = 0;
+
     private JButton loginButton;
     private JButton forgetPassword;
     private JTextField userText;
@@ -78,9 +78,8 @@ public class LoginPanel extends JPanel {
                 String user = userText.getText();
                 String password = new String(passwordText.getPassword());
                 System.out.println("Username: " + user + " Password: " + password);
-                GUIFrame.currentState = 1;
                 GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(LoginPanel.this);
-                guiFrame.changePanel();
+                guiFrame.changePanel(GUIFrame.MAINPANEL);
             }
         });
 
