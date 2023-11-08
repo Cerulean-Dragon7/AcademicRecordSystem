@@ -2,7 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GUIFrame extends JFrame {
-    public static int currentState = 0; //0 = loginGUI
+    public  static final int LOGINPANEL = 0;
+    public static final int MAINPANEL = 1;
     private LoginPanel loginPanel;
     private MainPanel mainPanel;
     private CardLayout cardLayout;
@@ -17,14 +18,14 @@ public class GUIFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         initialCardPanel(); //create card Panel and card layout
-        changePanel();
+        changePanel(GUIFrame.LOGINPANEL);
         setVisible(true); // Display frame
     }
 
 
-    public void changePanel() {
-
-        switch (currentState) {
+    public void changePanel(int state) {
+        System.out.println(state);
+        switch (state) {
             case 0:
                 cardLayout.show(cardPanel, "login");
                 break;
@@ -33,6 +34,7 @@ public class GUIFrame extends JFrame {
                 break;
         }
     }
+
     private void initialCardPanel(){
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
