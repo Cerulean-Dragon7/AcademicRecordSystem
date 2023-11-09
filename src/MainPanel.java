@@ -15,12 +15,12 @@ public class MainPanel extends JPanel {
     private JPanel rightPanel;
     private JPanel logoutPanel;
     private JPanel coursePanel;
-    public MainPanel(){
+    public MainPanel(int user){
         //check the user access level to show difference panel
         initBaseComponent();
-        getUserView(2);
+        getUserView(user);
     }
-
+    //add component of name profile button and logout button
     private void initBaseComponent(){   //create the header
         this.setLayout(new BorderLayout());
 
@@ -73,7 +73,8 @@ public class MainPanel extends JPanel {
         this.setVisible(true);
     }
 
-    private void getUserView(int user){
+    //identified witch user is
+    public void getUserView(int user){
         if(user == 0){
             studentPanel();
         }
