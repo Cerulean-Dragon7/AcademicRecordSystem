@@ -2,10 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GUIFrame extends JFrame {
-    public  static final int LOGINPANEL = 0;
-    public static final int MAINPANEL = 1;
-    private LoginPanel loginPanel;
-    private MainPanel mainPanel;
+    public  static final String LOGINPANEL = "login";
+    public static final String MAINPANEL = "main";
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
@@ -16,43 +14,35 @@ public class GUIFrame extends JFrame {
         setResizable(false); // can't change the size of the window
         //the program terminate when the use press the close button
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        LoginPanel loginPanel = new LoginPanel();
+        this.add(loginPanel);
 
         initialCardPanel(); //create card Panel and card layout
-        changePanel(GUIFrame.LOGINPANEL);
+        changePanel(LOGINPANEL);
         setVisible(true); // Display frame
     }
 
 
-    public void changePanel(int state) {
-        System.out.println(state);
-        switch (state) {
-            case 0:
-                cardLayout.show(cardPanel, "login");
-                break;
-            case 1:
-                cardLayout.show(cardPanel, "main");
-                break;
-        }
+    public void changePanel(String name) {
+        cardLayout.show(cardPanel, name);
     }
 
     private void initialCardPanel(){
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
-        loginPanel = new LoginPanel();
-        mainPanel = new MainPanel();
-
+        LoginPanel loginPanel = new LoginPanel();
         // Add the panels to the card panel
-        cardPanel.add(loginPanel, "login");
-        cardPanel.add(mainPanel, "main");
-
+        addCard(loginPanel,LOGINPANEL);
         // Add the card panel to the frame
         this.add(cardPanel);
     }
 
+    public void addCard(JPanel jPanel,String name){
+        cardPanel.add(jPanel,name);
+    }
 
     public static void main(String[] args){
-        GUIFrame guiFrame = new GUIFrame();
-
+        new GUIFrame();
     }
 }

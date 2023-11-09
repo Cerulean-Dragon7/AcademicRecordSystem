@@ -1,3 +1,5 @@
+import com.sun.tools.javac.Main;
+
 import javax.swing.*;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
@@ -78,7 +80,10 @@ public class LoginPanel extends JPanel {
                 String user = userText.getText();
                 String password = new String(passwordText.getPassword());
                 System.out.println("Username: " + user + " Password: " + password);
+                //change the screen to main screen
                 GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(LoginPanel.this);
+                MainPanel mainPanel = new MainPanel(Integer.parseInt(user));
+                guiFrame.addCard(mainPanel,GUIFrame.MAINPANEL);
                 guiFrame.changePanel(GUIFrame.MAINPANEL);
             }
         });
