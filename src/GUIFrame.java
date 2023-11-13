@@ -6,7 +6,7 @@ public class GUIFrame extends JFrame {
     public static final String MAINPANEL = "main";
     private CardLayout cardLayout;
     private JPanel cardPanel;
-
+//hi
     public GUIFrame(){
         setTitle("Academic Record System");
         //specifies the width and height of the window in pixels
