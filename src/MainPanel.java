@@ -39,6 +39,15 @@ public class MainPanel extends JPanel {
         profile = new JButton("Profile");
         profile.setPreferredSize(new Dimension(100,30));
 
+        profile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(MainPanel.this);
+                guiFrame.addCard(new ProfilePanel(), GUIFrame.PROFILE);
+                guiFrame.changePanel(GUIFrame.PROFILE);
+            }
+        });
+
         rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.add(profile);
 
@@ -153,6 +162,7 @@ public class MainPanel extends JPanel {
             studentListPanel.add(Box.createRigidArea(new Dimension(0,1)));
 
             student.setText(studentTextFormat);
+            student.setPreferredSize(new Dimension(studentListPanel.getWidth(),30));
             student.setMinimumSize(new Dimension(200,300));
             student.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
             student.addMouseListener(new MouseAdapter() {
