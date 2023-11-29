@@ -22,7 +22,6 @@ public class ProfilePanel extends JPanel {
         initComponent();
 
     }
-
     private void initComponent(){
         headerPanel = new JPanel(new BorderLayout());
 
@@ -50,25 +49,7 @@ public class ProfilePanel extends JPanel {
         setLayout();
         addComponent();
     }
-    private void setEventListener(){
-        back.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(ProfilePanel.this);
-                guiFrame.changePanel(GUIFrame.MAINPANEL);
-            }
-        });
 
-        logout.addActionListener(new ActionListener() {
-            //go to login screen
-            //disconnect to db
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(ProfilePanel.this);
-                guiFrame.changePanel(GUIFrame.LOGINPANEL);
-            }
-        });
-    }
     private void setLayout(){
         this.setLayout(new BorderLayout());
 
@@ -90,6 +71,7 @@ public class ProfilePanel extends JPanel {
 
         this.setVisible(true);
     }
+
     private void addComponent(){
         leftPanel.add(userName);
         rightPanel.add(back);
@@ -136,5 +118,25 @@ public class ProfilePanel extends JPanel {
         this.add(headerPanel,BorderLayout.NORTH);   //add header panel to the bottom panel
         this.add(logoutPanel,BorderLayout.SOUTH);
         this.add(contentPanel, BorderLayout.CENTER);
+    }
+
+    private void setEventListener(){
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(ProfilePanel.this);
+                guiFrame.changePanel(GUIFrame.MAINPANEL);
+            }
+        });
+
+        logout.addActionListener(new ActionListener() {
+            //go to login screen
+            //disconnect to db
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(ProfilePanel.this);
+                guiFrame.changePanel(GUIFrame.LOGINPANEL);
+            }
+        });
     }
 }
