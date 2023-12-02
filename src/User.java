@@ -1,5 +1,4 @@
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class User {
     private String id;
@@ -10,23 +9,15 @@ public class User {
     private String email;
     private String password;
 
-    public User(ResultSet rs){
-        try{
-            this.id = rs.getString(1);
-            this.firstName = rs.getString(2);
-            this.lastName = rs.getString(3);
-            this.address = rs.getString(4);
-            this.phoneNum = rs.getString(5);
-            this.email = rs.getString(6);
-            this.password = rs.getString(7);
+    public User(String id, String firstName, String lastName, String address, String phoneNum, String email, String password){
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-    public User(){
-
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.phoneNum = phoneNum;
+        this.email = email;
+        this.password = password;
     }
 
     public String getId() {
@@ -83,6 +74,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    public void setPersonInformation(ArrayList<String> information){
+        setFirstName(information.get(0));
+        setLastName(information.get(1));
+        setAddress(information.get(2));
+        setPhoneNum(information.get(3));
+        setEmail(information.get(4));
+        setPassword(information.get(5));
     }
 
 }
