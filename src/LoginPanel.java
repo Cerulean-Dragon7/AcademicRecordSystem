@@ -29,9 +29,9 @@ public class LoginPanel extends JPanel {
         componentsPanel = new JPanel(new GridBagLayout());
         icon = new JLabel("Academic Record System",SwingConstants.CENTER);
         userLabel = new JLabel("User ID");
-        userText = new JTextField("s0019323",20);
+        userText = new JTextField("t4282311",20);
         passwordLabel = new JLabel("Password");
-        passwordText = new JPasswordField("Id1562092",20);
+        passwordText = new JPasswordField("Skk054884",20);
         loginButton = new JButton("Login");
         forgetPassword = new JButton("forget password");
 
@@ -49,17 +49,18 @@ public class LoginPanel extends JPanel {
 
                 if(user == null){
                     System.out.println("user is null");
-                }else if(user.getId().charAt(0)== 's'){
-                    Student student = (Student) user;
-                    System.out.println(student.getEmail());
-                    System.out.println(student.getCourseName());
+                }else {
+                    //change the screen to main screen
+                    userText.setText("");
+                    passwordText.setText("");
+                    GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(LoginPanel.this);
+                    MainPanel mainPanel = new MainPanel(user);
+                    guiFrame.addCard(mainPanel,GUIFrame.MAINPANEL);
+                    guiFrame.changePanel(GUIFrame.MAINPANEL);
                 }
 
-//                //change the screen to main screen
-//                GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(LoginPanel.this);
-//                MainPanel mainPanel = new MainPanel(Integer.parseInt(user));
-//                guiFrame.addCard(mainPanel,GUIFrame.MAINPANEL);
-//                guiFrame.changePanel(GUIFrame.MAINPANEL);
+
+
             }
         });
 
@@ -138,15 +139,16 @@ public class LoginPanel extends JPanel {
             if(userRS.next()) {
                 switch (userid.charAt(0)) {
                     case 'a':
-                        return new Admin(userRS);
+                        return new Admin(userRS.getString(1),userRS.getString(2),userRS.getString(3),userRS.getString(4),
+                                userRS.getString(5),userRS.getString(6),userRS.getString(7));
                     case 's' :
-                        return new Student(userRS);
+                        return new Student(userRS.getString(1),userRS.getString(2),userRS.getString(3),userRS.getString(4),
+                                userRS.getString(5),userRS.getString(6),userRS.getString(7));
                     case 't' :
-                        return new Teacher(userRS);
+                        return new Teacher(userRS.getString(1),userRS.getString(2),userRS.getString(3),userRS.getString(4),
+                                userRS.getString(5),userRS.getString(6),userRS.getString(7));
                 }
             }
-
-
         }catch (SQLException e){
             e.printStackTrace();
         }

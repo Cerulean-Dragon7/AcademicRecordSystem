@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProfilePanel extends JPanel {
     private JLabel userName;
@@ -17,10 +19,21 @@ public class ProfilePanel extends JPanel {
     private JPanel logoutRightPanel;
     private JPanel logoutLeftPanel;
     private JPanel contentPanel;
-    private String[] nameArray = {"First Name", "Last Name", "Address", "Phone Number", "email"};
-    public ProfilePanel(){
-        initComponent();
+    private JTextField[] editText = new JTextField[6];
+    private String[] nameArray = {"First Name", "Last Name", "Address", "Phone Number", "email", "Password"};
+    private User user;
+    private ArrayList<String> textArray = new ArrayList<>();
+    public ProfilePanel(User user){
+        this.user = user;
 
+        textArray.add(user.getFirstName());
+        textArray.add(user.getLastName());
+        textArray.add(user.getAddress());
+        textArray.add(user.getPhoneNum());
+        textArray.add(user.getEmail());
+        textArray.add(user.getPassword());
+
+        initComponent();
     }
     private void initComponent(){
         headerPanel = new JPanel(new BorderLayout());
@@ -44,7 +57,7 @@ public class ProfilePanel extends JPanel {
 
         logoutPanel = new JPanel(new BorderLayout());
 
-        contentPanel = new JPanel(new GridLayout(5,1,0,5));
+        contentPanel = new JPanel(new GridLayout(6,1,0,5));
 
         setLayout();
         addComponent();
@@ -95,14 +108,14 @@ public class ProfilePanel extends JPanel {
 
             nameLabelPanel.add(nameLabel);
 
-            JTextField editText = new JTextField();
-            editText.setPreferredSize(new Dimension(200,20));
+            editText[i] = new JTextField(textArray.get(i));
+            editText[i].setPreferredSize(new Dimension(300,20));
 
 
             textPanel.setLayout(springLayout);
-            textPanel.add(editText);
+            textPanel.add(editText[i]);
 
-            SpringLayout.Constraints constraints = springLayout.getConstraints(editText);
+            SpringLayout.Constraints constraints = springLayout.getConstraints(editText[i]);
             constraints.setX(Spring.constant(5));
             constraints.setY(Spring.constant(49));
 
@@ -110,11 +123,10 @@ public class ProfilePanel extends JPanel {
             basePanel.add(nameLabelPanel,BorderLayout.WEST);
             basePanel.add(textPanel,BorderLayout.CENTER);
 
-            setEventListener();
-
             contentPanel.add(basePanel);
         }
 
+        setEventListener();
         this.add(headerPanel,BorderLayout.NORTH);   //add header panel to the bottom panel
         this.add(logoutPanel,BorderLayout.SOUTH);
         this.add(contentPanel, BorderLayout.CENTER);
@@ -128,7 +140,6 @@ public class ProfilePanel extends JPanel {
                 guiFrame.changePanel(GUIFrame.MAINPANEL);
             }
         });
-
         logout.addActionListener(new ActionListener() {
             //go to login screen
             //disconnect to db
@@ -136,6 +147,51 @@ public class ProfilePanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(ProfilePanel.this);
                 guiFrame.changePanel(GUIFrame.LOGINPANEL);
+            }
+        });
+        summit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<String> inputArray = new ArrayList<>();
+                String patternStringPhone = "^\\d{10}$";
+                String patternStringEmail = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+                String patternStringPassword ="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,20}$";
+
+                for (JTextField jTextField : editText) {
+                    inputArray.add(jTextField.getText().trim());
+                }
+
+                Pattern patternPhone = Pattern.compile(patternStringPhone);
+                Pattern patternEmail = Pattern.compile(patternStringEmail);
+                Pattern patternPassword = Pattern.compile(patternStringPassword);
+
+                Matcher matcherPhone = patternPhone.matcher(inputArray.get(3));
+                Matcher matcherEmail = patternEmail.matcher(inputArray.get(4));
+                Matcher matcherPassword = patternPassword.matcher(inputArray.get(5));
+
+                if(!matcherPhone.find()){
+                    JOptionPane.showMessageDialog(ProfilePanel.this,"invalid input on phone number","invalid input",JOptionPane.PLAIN_MESSAGE);
+                }else if(!matcherEmail.find()){
+                    JOptionPane.showMessageDialog(ProfilePanel.this,"invalid input on email","invalid input",JOptionPane.PLAIN_MESSAGE);
+                }else if(!matcherPassword.find()){
+                    JOptionPane.showMessageDialog(ProfilePanel.this, """
+                            invalid input on password
+                            at least one upper case letter
+                            at least one lower case letter
+                            at least one number
+                            total at least 8 digits""","invalid input",JOptionPane.PLAIN_MESSAGE);
+                }else{
+                    //a dialog to confirm user need to save their information
+                    int input = JOptionPane.showConfirmDialog(ProfilePanel.this,"Do you want to save your information?",
+                            "confirm",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE);
+
+                    if(input == 0){
+                        user.setPersonInformation(inputArray);
+                        DBConnection.updatePersonalInformation(user);
+                    }
+                }
+
+
             }
         });
     }
