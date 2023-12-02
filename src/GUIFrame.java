@@ -4,10 +4,9 @@ import java.awt.*;
 public class GUIFrame extends JFrame {
     public  static final String LOGINPANEL = "login";
     public static final String MAINPANEL = "main";
-    public static final  String PROFILE = "profile";
     private CardLayout cardLayout;
     private JPanel cardPanel;
-
+//hi
     public GUIFrame(){
         setTitle("Academic Record System");
         //specifies the width and height of the window in pixels
@@ -22,7 +21,6 @@ public class GUIFrame extends JFrame {
         changePanel(LOGINPANEL);
         setVisible(true); // Display frame
     }
-
 
 
     public void changePanel(String name) {
