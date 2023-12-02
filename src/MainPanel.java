@@ -17,22 +17,24 @@ public class MainPanel extends JPanel {
     private JPanel rightPanel;
     private JPanel logoutPanel;
     private JPanel coursePanel;
-    public MainPanel(int usertype, String user){
+
+    public MainPanel(int usertype, String user) {
         //check the user access level to show difference panel
         this.user = user;
         initBaseComponent();
         getUserView(usertype);
     }
+
     //add component of name profile button and logout button
-    private void initBaseComponent(){   //create the header
+    private void initBaseComponent() {   //create the header
         this.setLayout(new BorderLayout());
 
         headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setSize(800,100);   //set the panel size
+        headerPanel.setSize(800, 100);   //set the panel size
 
         //show the username
         userName = new JLabel(user);
-        userName.setPreferredSize(new Dimension(100,30));
+        userName.setPreferredSize(new Dimension(100, 30));
         userName.setFont(new Font("Arial", Font.PLAIN, 16));
 
         leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -40,9 +42,9 @@ public class MainPanel extends JPanel {
 
         //profile button
         profile = new JButton("Profile");
-        profile.setPreferredSize(new Dimension(100,30));
+        profile.setPreferredSize(new Dimension(100, 30));
         profile.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {        
+            public void actionPerformed(ActionEvent e) {
                 DisplayStudentData displayStudentData = new DisplayStudentData(user);
                 displayStudentData.setVisible(true);
             }
@@ -52,13 +54,13 @@ public class MainPanel extends JPanel {
         rightPanel.add(profile);
 
         //header panel show username and button
-        headerPanel.add(leftPanel,BorderLayout.WEST);
-        headerPanel.add(rightPanel,BorderLayout.EAST);
-        headerPanel.setBorder(new MatteBorder(0,0,1,0,Color.BLACK));
+        headerPanel.add(leftPanel, BorderLayout.WEST);
+        headerPanel.add(rightPanel, BorderLayout.EAST);
+        headerPanel.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
 
         //logout button
         logout = new JButton("logout");
-        logout.setPreferredSize(new Dimension(70,20));
+        logout.setPreferredSize(new Dimension(70, 20));
 
         logout.addActionListener(new ActionListener() {
             //go to login screen
@@ -71,26 +73,25 @@ public class MainPanel extends JPanel {
         });
 
         logoutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        logoutPanel.setSize(800,50);
-        logoutPanel.setBorder(new MatteBorder(1,0,0,0,Color.BLACK));
+        logoutPanel.setSize(800, 50);
+        logoutPanel.setBorder(new MatteBorder(1, 0, 0, 0, Color.BLACK));
         logoutPanel.add(logout);
 
 
-
-        this.add(headerPanel,BorderLayout.NORTH);   //add header panel to the bottom panel
-        this.add(logoutPanel,BorderLayout.SOUTH);
+        this.add(headerPanel, BorderLayout.NORTH);   //add header panel to the bottom panel
+        this.add(logoutPanel, BorderLayout.SOUTH);
         this.setVisible(true);
     }
 
     //identified witch user is
-    public void getUserView(int usertype){
-        if(usertype == 0){
-            studentPanel();           
+    public void getUserView(int usertype) {
+        if (usertype == 0) {
+            studentPanel();
         }
-        if(usertype == 1){
+        if (usertype == 1) {
             teacherPanel();
         }
-        if(usertype == 2){
+        if (usertype == 2) {
             adminPanel();
         }
     }
@@ -100,181 +101,181 @@ public class MainPanel extends JPanel {
         JLabel courseTitle = new JLabel("My course");
         courseTitle.setHorizontalAlignment(SwingConstants.CENTER);
         courseTitle.setFont(new Font("Arial", Font.PLAIN, 16));
-    
+
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(courseTitle, BorderLayout.NORTH);
-    
+
         // Show the student title
         JLabel studentTitle = new JLabel("Student");
         studentTitle.setHorizontalAlignment(SwingConstants.CENTER);
         studentTitle.setFont(new Font("Arial", Font.PLAIN, 16));
-    
+
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.add(studentTitle, BorderLayout.NORTH);
-    
+
         // Create panel of the course
         JPanel bottomPanel = new JPanel(new FlowLayout());
-    
+
         JPanel coursePanel = new JPanel(); // Show course as vertical
         coursePanel.setLayout(new BoxLayout(coursePanel, BoxLayout.Y_AXIS));
         ArrayList<String> courseIDs = DatabaseHelper.getCoursesByTeacherID(user);
-    
+
         JPanel studentListPanel = new JPanel(); // Show student in course as vertical
         studentListPanel.setLayout(new BoxLayout(studentListPanel, BoxLayout.Y_AXIS));
         JLabel adviceLabel = new JLabel("Please choose a course to see students");
         adviceLabel.setHorizontalAlignment(SwingConstants.CENTER);
         adviceLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         studentListPanel.add(adviceLabel);
-    
+
         // Add the student all course panel
         // Add a variable to keep track of the previously clicked course
 // Create an array to store the reference to the previous course label
-final JLabel[] previousCourse = {null};
+        final JLabel[] previousCourse = {null};
 
 // Add the student all course panel
-for (String courseID : courseIDs) {
-    JLabel course = new JLabel();
-    String courseTextFormat = "<html><font size ='4'> Course " + courseID + "</font></html>";
-    coursePanel.add(Box.createRigidArea(new Dimension(0, 1)));
+        for (String courseID : courseIDs) {
+            JLabel course = new JLabel();
+            String courseTextFormat = "<html><font size ='4'> Course " + courseID + "</font></html>";
+            coursePanel.add(Box.createRigidArea(new Dimension(0, 1)));
 
-    course.setText(courseTextFormat);
-    course.setMinimumSize(new Dimension(200, 300));
-    course.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+            course.setText(courseTextFormat);
+            course.setMinimumSize(new Dimension(200, 300));
+            course.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
-    course.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            // Set the background color of the previously clicked course to null
-            if (previousCourse[0] != null) {
-                previousCourse[0].setOpaque(false);
-                previousCourse[0].setBackground(null);
-            }
-
-            // Show the loading indication
-            course.setOpaque(true);
-            course.setBackground(Color.GRAY);
-
-            // Update the previously clicked course
-            previousCourse[0] = course;
-
-            JLabel loadingLabel = new JLabel("Loading...");
-            loadingLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            loadingLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-            studentListPanel.removeAll();
-            studentListPanel.add(loadingLabel);
-            studentListPanel.revalidate();
-            studentListPanel.repaint();
-
-            // Retrieve the student IDs for the clicked course in a separate thread
-            Thread fetchThread = new Thread(() -> {
-                ArrayList<String> studentIDs = DatabaseHelper.getStudentsByCourseID(courseID);
-
-                // Clear the student list panel
-                studentListPanel.removeAll();
-
-                // Add the student IDs to the student list panel
-                for (String studentID : studentIDs) {
-                    JLabel student = new JLabel();
-                    String studentTextFormat = "<html><font size ='4'> Student " + studentID + "</font></html>";
-                    studentListPanel.add(Box.createRigidArea(new Dimension(0, 1)));
-
-                    student.setText(studentTextFormat);
-                    student.setMinimumSize(new Dimension(200, 300));
-                    student.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-                    studentListPanel.add(student);
-                    student.addMouseListener(new MouseAdapter() { //click the course to see more detail
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        UpdateStudentScoreData UpdateStudentScoreData = new UpdateStudentScoreData(studentID);
-                        UpdateStudentScoreData.setVisible(true);
+            course.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // Set the background color of the previously clicked course to null
+                    if (previousCourse[0] != null) {
+                        previousCourse[0].setOpaque(false);
+                        previousCourse[0].setBackground(null);
                     }
-                });
-                    
+
+                    // Show the loading indication
+                    course.setOpaque(true);
+                    course.setBackground(Color.GRAY);
+
+                    // Update the previously clicked course
+                    previousCourse[0] = course;
+
+                    JLabel loadingLabel = new JLabel("Loading...");
+                    loadingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    loadingLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+                    studentListPanel.removeAll();
+                    studentListPanel.add(loadingLabel);
+                    studentListPanel.revalidate();
+                    studentListPanel.repaint();
+
+                    // Retrieve the student IDs for the clicked course in a separate thread
+                    Thread fetchThread = new Thread(() -> {
+                        ArrayList<String> studentIDs = DatabaseHelper.getStudentsByCourseID(courseID);
+
+                        // Clear the student list panel
+                        studentListPanel.removeAll();
+
+                        // Add the student IDs to the student list panel
+                        for (String studentID : studentIDs) {
+                            JLabel student = new JLabel();
+                            String studentTextFormat = "<html><font size ='4'> Student " + studentID + "</font></html>";
+                            studentListPanel.add(Box.createRigidArea(new Dimension(0, 1)));
+
+                            student.setText(studentTextFormat);
+                            student.setMinimumSize(new Dimension(200, 300));
+                            student.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                            studentListPanel.add(student);
+                            student.addMouseListener(new MouseAdapter() { //click the course to see more detail
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+                                    UpdateStudentScoreData UpdateStudentScoreData = new UpdateStudentScoreData(studentID);
+                                    UpdateStudentScoreData.setVisible(true);
+                                }
+                            });
+
+                        }
+
+                        // Repaint the student list panel to reflect the changes
+                        studentListPanel.revalidate();
+                        studentListPanel.repaint();
+                    });
+
+                    fetchThread.start(); // Start the data fetching thread
                 }
-
-                // Repaint the student list panel to reflect the changes
-                studentListPanel.revalidate();
-                studentListPanel.repaint();
             });
-
-            fetchThread.start(); // Start the data fetching thread
+            coursePanel.add(course);
         }
-    });
-    coursePanel.add(course);
-}
         JScrollPane courseScrollPanel = new JScrollPane(coursePanel); // Let the panel can scroll
         courseScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         courseScrollPanel.setPreferredSize(new Dimension(300, 570));
-    
+
         JScrollPane studentScrollPanel = new JScrollPane(studentListPanel); // Let the panel can scroll
         studentScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         studentScrollPanel.setPreferredSize(new Dimension(300, 570));
-    
+
         leftPanel.add(courseScrollPanel);
         rightPanel.add(studentScrollPanel);
-    
+
         bottomPanel.add(leftPanel);
         bottomPanel.add(rightPanel);
-    
+
         this.add(bottomPanel, BorderLayout.CENTER);
     }
 
-    private void studentPanel(){
+    private void studentPanel() {
         JPanel bottomPanel = new JPanel(new BorderLayout());
 
-    JLabel courseTitle = new JLabel("My Course");
-    courseTitle.setFont(new Font("Arial", Font.PLAIN, 20));
-    courseTitle.setBackground(Color.GREEN);
-    courseTitle.setPreferredSize(new Dimension(200, 20));
+        JLabel courseTitle = new JLabel("My Course");
+        courseTitle.setFont(new Font("Arial", Font.PLAIN, 20));
+        courseTitle.setBackground(Color.GREEN);
+        courseTitle.setPreferredSize(new Dimension(200, 20));
 
-    JPanel coursePanel = new JPanel(); // show course as vertical
-    coursePanel.setLayout(new BoxLayout(coursePanel, BoxLayout.Y_AXIS));
+        JPanel coursePanel = new JPanel(); // show course as vertical
+        coursePanel.setLayout(new BoxLayout(coursePanel, BoxLayout.Y_AXIS));
 
-    // Get the course IDs for the student
-     ArrayList<String> courseIDs = DatabaseHelper.getCoursesByStudentID(user);
-
-
-            //add the course all course panel
-            for (String courseID : courseIDs) {
-                JLabel course = new JLabel();
-                String courseTextFormat = "<html><font size ='4'> Course " + courseID + "</font></html>";
-
-                course.setText(courseTextFormat);
-                course.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-                coursePanel.add(Box.createRigidArea(new Dimension(0,5)));
+        // Get the course IDs for the student
+        ArrayList<String> courseIDs = DatabaseHelper.getCoursesByStudentID(user);
 
 
-                course.addMouseListener(new MouseAdapter() { //click the course to see more detail
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        String courseName = "Course: " + courseID;
-                        String courseGrade = DatabaseHelper.getCourseGrades(user, courseID);
-                        JOptionPane.showMessageDialog(MainPanel.this, courseGrade, courseName, JOptionPane.PLAIN_MESSAGE);
-                    }
-                });
-                coursePanel.add(course);
-            }
+        //add the course all course panel
+        for (String courseID : courseIDs) {
+            JLabel course = new JLabel();
+            String courseTextFormat = "<html><font size ='4'> Course " + courseID + "</font></html>";
+
+            course.setText(courseTextFormat);
+            course.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+            coursePanel.add(Box.createRigidArea(new Dimension(0, 5)));
+
+
+            course.addMouseListener(new MouseAdapter() { //click the course to see more detail
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    String courseName = "Course: " + courseID;
+                    String courseGrade = DatabaseHelper.getCourseGrades(user, courseID);
+                    JOptionPane.showMessageDialog(MainPanel.this, courseGrade, courseName, JOptionPane.PLAIN_MESSAGE);
+                }
+            });
+            coursePanel.add(course);
+        }
 
 
         JScrollPane courseScrollPanel = new JScrollPane(coursePanel);
         courseScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         courseScrollPanel.setPreferredSize(new Dimension(300, 570));
 
-        bottomPanel.add(courseTitle,BorderLayout.NORTH);
-        bottomPanel.add(courseScrollPanel,BorderLayout.CENTER);
+        bottomPanel.add(courseTitle, BorderLayout.NORTH);
+        bottomPanel.add(courseScrollPanel, BorderLayout.CENTER);
 
-        this.add(bottomPanel,BorderLayout.CENTER);
+        this.add(bottomPanel, BorderLayout.CENTER);
     }
 
-    private void adminPanel(){
+    private void adminPanel() {
         //course title
         JLabel courseTitle = new JLabel("My course");
         courseTitle.setHorizontalAlignment(SwingConstants.CENTER);
         courseTitle.setFont(new Font("Arial", Font.PLAIN, 16));
 
         JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.add(courseTitle,BorderLayout.NORTH);
-        leftPanel.setMinimumSize(new Dimension(300,500));
+        leftPanel.add(courseTitle, BorderLayout.NORTH);
+        leftPanel.setMinimumSize(new Dimension(300, 500));
 
 
         //teacher title
@@ -283,7 +284,7 @@ for (String courseID : courseIDs) {
         teacherTitle.setFont(new Font("Arial", Font.PLAIN, 16));
 
         JPanel middlePanel = new JPanel(new BorderLayout());
-        middlePanel.add(teacherTitle,BorderLayout.NORTH);
+        middlePanel.add(teacherTitle, BorderLayout.NORTH);
 
         //student title
         JLabel studentTitle = new JLabel("Student");
@@ -291,7 +292,7 @@ for (String courseID : courseIDs) {
         studentTitle.setFont(new Font("Arial", Font.PLAIN, 16));
 
         JPanel rightPanel = new JPanel(new BorderLayout());
-        rightPanel.add(studentTitle,BorderLayout.NORTH);
+        rightPanel.add(studentTitle, BorderLayout.NORTH);
 
         //panel contain course, teacher, student
         JPanel bottomPanel = new JPanel(new FlowLayout());
@@ -303,10 +304,10 @@ for (String courseID : courseIDs) {
         ArrayList<String> courseIDs = DatabaseHelper.getCourseIDsFromDatabase();
 
         //add the student all course panel
-         for (String courseID : courseIDs) {
+        for (String courseID : courseIDs) {
             JLabel course = new JLabel();
             String courseTextFormat = "<html><font size ='4'> Course " + courseID + "</font></html>";
-            coursePanel.add(Box.createRigidArea(new Dimension(0,1)));
+            coursePanel.add(Box.createRigidArea(new Dimension(0, 1)));
 
             course.setText(courseTextFormat);
             course.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
@@ -322,7 +323,7 @@ for (String courseID : courseIDs) {
                 }
             });
             coursePanel.add(course);
-            coursePanel.setMinimumSize(new Dimension(300,500));
+            coursePanel.setMinimumSize(new Dimension(300, 500));
         }
 
         JScrollPane courseScrollPanel = new JScrollPane(coursePanel); //let the panel can scroll
@@ -332,13 +333,13 @@ for (String courseID : courseIDs) {
         //show to list of student witch in the course
         JPanel studentListPanel = new JPanel(); //show student in course as vertical
         studentListPanel.setLayout(new BoxLayout(studentListPanel, BoxLayout.Y_AXIS));
-         ArrayList<String> studentIDs = DatabaseHelper.getStudentIDsFromDatabase();
+        ArrayList<String> studentIDs = DatabaseHelper.getStudentIDsFromDatabase();
 
         //add the student all course panel
         for (String studentID : studentIDs) {
             JLabel student = new JLabel();
             String studentTextFormat = "<html><font size ='4'> Student " + studentID + "</font></html>";
-            studentListPanel.add(Box.createRigidArea(new Dimension(0,1)));
+            studentListPanel.add(Box.createRigidArea(new Dimension(0, 1)));
 
             student.setText(studentTextFormat);
             student.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
@@ -366,7 +367,7 @@ for (String courseID : courseIDs) {
         for (String teacherID : teacherIDs) {
             JLabel student = new JLabel();
             String studentTextFormat = "<html><font size ='4'> Teacher " + teacherID + "</font></html>";
-            teacherPanel.add(Box.createRigidArea(new Dimension(0,1)));
+            teacherPanel.add(Box.createRigidArea(new Dimension(0, 1)));
 
             student.setText(studentTextFormat);
             student.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
@@ -389,15 +390,15 @@ for (String courseID : courseIDs) {
         middlePanel.add(teacherScrollPanel);
         rightPanel.add(studentScrollPanel);
 
-        leftPanel.setPreferredSize(new Dimension(250,620));
-        middlePanel.setPreferredSize(new Dimension(250,620));
-        rightPanel.setPreferredSize(new Dimension(250,620));
+        leftPanel.setPreferredSize(new Dimension(250, 620));
+        middlePanel.setPreferredSize(new Dimension(250, 620));
+        rightPanel.setPreferredSize(new Dimension(250, 620));
 
         bottomPanel.add(leftPanel);
         bottomPanel.add(middlePanel);
         bottomPanel.add(rightPanel);
 
 
-        this.add(bottomPanel,BorderLayout.CENTER);
+        this.add(bottomPanel, BorderLayout.CENTER);
     }
 }

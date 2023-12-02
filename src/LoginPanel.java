@@ -1,7 +1,4 @@
-import com.sun.tools.javac.Main;
-
 import javax.swing.*;
-import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -78,7 +75,7 @@ public class LoginPanel extends JPanel {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 String user = userText.getText();
                 String password = new String(passwordText.getPassword());
                 System.out.println("Username: " + user + " Password: " + password);
@@ -102,8 +99,8 @@ public class LoginPanel extends JPanel {
                         // ...
                         usertype = "2";
                         GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(LoginPanel.this);
-                        MainPanel mainPanel = new MainPanel(Integer.parseInt(usertype), user); 
-                        guiFrame.addCard(mainPanel,GUIFrame.MAINPANEL);
+                        MainPanel mainPanel = new MainPanel(Integer.parseInt(usertype), user);
+                        guiFrame.addCard(mainPanel, GUIFrame.MAINPANEL);
                         guiFrame.changePanel(GUIFrame.MAINPANEL);
                         adminResultSet.close();
                         adminStatement.close();
@@ -122,10 +119,10 @@ public class LoginPanel extends JPanel {
                         System.out.println("Logged in as teacher");
                         // Code for teacher login
                         // ...
-                         usertype = "1";
+                        usertype = "1";
                         GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(LoginPanel.this);
-                        MainPanel mainPanel = new MainPanel(Integer.parseInt(usertype), user); 
-                        guiFrame.addCard(mainPanel,GUIFrame.MAINPANEL);
+                        MainPanel mainPanel = new MainPanel(Integer.parseInt(usertype), user);
+                        guiFrame.addCard(mainPanel, GUIFrame.MAINPANEL);
                         guiFrame.changePanel(GUIFrame.MAINPANEL);
                         teacherResultSet.close();
                         teacherStatement.close();
@@ -144,10 +141,10 @@ public class LoginPanel extends JPanel {
                         System.out.println("Logged in as student");
                         // Code for student login
                         // ...
-                         usertype = "0";
+                        usertype = "0";
                         GUIFrame guiFrame = (GUIFrame) SwingUtilities.getWindowAncestor(LoginPanel.this);
-                        MainPanel mainPanel = new MainPanel(Integer.parseInt(usertype), user); 
-                        guiFrame.addCard(mainPanel,GUIFrame.MAINPANEL);
+                        MainPanel mainPanel = new MainPanel(Integer.parseInt(usertype), user);
+                        guiFrame.addCard(mainPanel, GUIFrame.MAINPANEL);
                         guiFrame.changePanel(GUIFrame.MAINPANEL);
                         studentResultSet.close();
                         studentStatement.close();
