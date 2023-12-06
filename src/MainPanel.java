@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class MainPanel extends JPanel {
@@ -23,6 +25,44 @@ public class MainPanel extends JPanel {
         this.user = user;
         initBaseComponent();
         getUserView(usertype);
+    }
+
+    public boolean deleteFromStudentTable(String studentId) {
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://dpg-clg52g7jc5ks73ebv3kg-a.singapore-postgres.render.com:5432/academicsysdb", "academicsysdb_user", "ZjIvqGcPMEmfe81jZZlNZVamy9XFvlL2");
+
+            String sql = "DELETE FROM student WHERE student_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, studentId);
+
+            int rowsDeleted = statement.executeUpdate();
+            connection.close();
+
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error deleting row from student table: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean deleteFromTeacherTable(String teacherId) {
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://dpg-clg52g7jc5ks73ebv3kg-a.singapore-postgres.render.com:5432/academicsysdb", "academicsysdb_user", "ZjIvqGcPMEmfe81jZZlNZVamy9XFvlL2");
+
+            String sql = "DELETE FROM teacher WHERE teacher_id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, teacherId);
+
+            int rowsDeleted = statement.executeUpdate();
+            connection.close();
+
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error deleting row from teacher table: " + e.getMessage());
+            return false;
+        }
     }
 
     //add component of name profile button and logout button
@@ -45,7 +85,7 @@ public class MainPanel extends JPanel {
         profile.setPreferredSize(new Dimension(100, 30));
         profile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                DisplayStudentData displayStudentData = new DisplayStudentData(user);
+                DisplayProfileData displayStudentData = new DisplayProfileData(user);
                 displayStudentData.setVisible(true);
             }
         });
@@ -114,7 +154,7 @@ public class MainPanel extends JPanel {
         rightPanel.add(studentTitle, BorderLayout.NORTH);
 
         // Create panel of the course
-        JPanel bottomPanel = new JPanel(new FlowLayout());
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 3));
 
         JPanel coursePanel = new JPanel(); // Show course as vertical
         coursePanel.setLayout(new BoxLayout(coursePanel, BoxLayout.Y_AXIS));
@@ -221,7 +261,7 @@ public class MainPanel extends JPanel {
     }
 
     private void studentPanel() {
-        JPanel bottomPanel = new JPanel(new BorderLayout());
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 3));
 
         JLabel courseTitle = new JLabel("My Course");
         courseTitle.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -269,6 +309,423 @@ public class MainPanel extends JPanel {
 
     private void adminPanel() {
         //course title
+        JPanel coursePanel = new JPanel(); //show course panel
+        JPanel studentListPanel = new JPanel(); //show student panel
+        JPanel teacherPanel = new JPanel(); //show student panel
+
+        JButton addButton = new JButton("Add Teacher");
+        rightPanel.add(addButton);
+        addButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame addTeacherFrame = new JFrame("Add Teacher");
+                addTeacherFrame.setSize(400, 300);
+
+                // Create labels and text fields for teacher details
+                JLabel idLabel = new JLabel("Teacher ID:");
+                JTextField idField = new JTextField(20);
+
+                JLabel firstNameLabel = new JLabel("First Name:");
+                JTextField firstNameField = new JTextField(20);
+
+                JLabel lastNameLabel = new JLabel("Last Name:");
+                JTextField lastNameField = new JTextField(20);
+
+                JLabel addressLabel = new JLabel("Address:");
+                JTextField addressField = new JTextField(20);
+
+                JLabel phoneNumLabel = new JLabel("Phone Number:");
+                JTextField phoneNumField = new JTextField(20);
+
+                JLabel emailLabel = new JLabel("Email:");
+                JTextField emailField = new JTextField(20);
+
+                JLabel passwordLabel = new JLabel("Password:");
+                JPasswordField passwordField = new JPasswordField(20);
+
+                // Create a button for adding the teacher
+                JButton addTeacherButton = new JButton("Add Teacher");
+
+                // Add action listener to the addTeacherButton to handle the addition of the new teacher
+                addTeacherButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Get the values entered by the user
+                        String teacherID = idField.getText();
+                        String firstName = firstNameField.getText();
+                        String lastName = lastNameField.getText();
+                        String address = addressField.getText();
+                        String phoneNumber = phoneNumField.getText();
+                        String email = emailField.getText();
+                        String password = new String(passwordField.getPassword());
+                        String errorMessage = null;
+
+                        // Perform validation if needed
+
+                        // Add the teacher to the teacher table using the entered values
+                        try {
+                            // Establish a connection to the PostgreSQL database
+                            Connection connection = DriverManager.getConnection("jdbc:postgresql://dpg-clg52g7jc5ks73ebv3kg-a.singapore-postgres.render.com:5432/academicsysdb", "academicsysdb_user", "ZjIvqGcPMEmfe81jZZlNZVamy9XFvlL2");
+
+                            // Create a prepared statement for executing the SQL query
+                            String query = "INSERT INTO teacher (teacher_id, first_name, last_name, address, phone_num, email, password) " +
+                                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                            PreparedStatement preparedStatement = connection.prepareStatement(query);
+                            if(teacherID != null && InputValidation.checkStudentID(teacherID)){
+                                preparedStatement.setString(1, teacherID);
+                            }else{
+                                errorMessage = "Teacher ID must start with \"t\", followed by exactly 7 digits";
+                            }
+                            if (firstName != null && InputValidation.checkFirstName(firstName)) {
+                                preparedStatement.setString(2, firstName);
+                            }else{
+                                errorMessage = "First name only contain 1-20 character";
+                            }
+                            if (lastName != null && InputValidation.checkLastName(lastName)) {
+                                preparedStatement.setString(3, lastName);
+                            }else{
+                                errorMessage = "Last name only contain 1-20 character";
+                            }
+                            if (address != null && InputValidation.checkAddress(address)) {
+                                preparedStatement.setString(4, address);
+                            }else {
+                                errorMessage = "Address need to have exactly 1-50 number";
+                            }
+                            if (phoneNumber != null && InputValidation.checkPhoneNumber(phoneNumber)) {
+                                preparedStatement.setString(5, phoneNumber);
+                                preparedStatement.setBigDecimal(5, new BigDecimal(phoneNumber));
+                            }else {
+                                errorMessage = "Phone number need to have exactly 10 number";
+                            }
+                            if (email != null && InputValidation.checkEmail(email)) {
+                                preparedStatement.setString(6, email);
+                            }else {
+                                errorMessage = "Email only contain 1-50 character";
+                            }
+                            if (InputValidation.checkPassword(password)) {
+                                preparedStatement.setString(7, password);
+                            }else {
+                                errorMessage  = "Password need to have at least one lower case letter\n" +
+                                        "at least one upper case letter \n at least one number \n at least 8 character";
+                            }
+
+                            if(errorMessage == null) {
+                                // Execute the SQL query
+                                preparedStatement.executeUpdate();
+
+                                // Close the prepared statement and the database connection
+                                preparedStatement.close();
+                                connection.close();
+
+                                ArrayList<String> teacher_id = DatabaseHelper.getTeacherIDsFromDatabase();
+                                teacherPanel.removeAll();
+                                for (String tid : teacher_id) {
+                                    JLabel teacher = new JLabel();
+                                    String teacherTextFormat = "<html><font size ='4'> Student " + tid + "</font></html>";
+                                    teacherPanel.add(Box.createRigidArea(new Dimension(0, 1)));
+
+                                    teacher.setText(teacherTextFormat);
+                                    teacher.setMinimumSize(new Dimension(200, 300));
+                                    teacher.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                                    teacherPanel.add(teacher);
+                                    teacher.addMouseListener(new MouseAdapter() { //click the course to see more detail
+                                        @Override
+                                        public void mouseClicked(MouseEvent e) {
+                                            DisplayProfileData displayStudentData = new DisplayProfileData(tid);
+                                            displayStudentData.setVisible(true);
+                                        }
+                                    });
+                                }
+                                teacherPanel.revalidate();
+                                teacherPanel.repaint();
+                                // Show a success message or perform any other necessary actions
+                                JOptionPane.showMessageDialog(addTeacherFrame, "Teacher added successfully.");
+                            }else{
+                                JOptionPane.showMessageDialog(MainPanel.this, errorMessage, "Error", JOptionPane.PLAIN_MESSAGE);
+                            }
+                        } catch (SQLException ex) {
+                            // Handle any errors that may occur during the database operation
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(addTeacherFrame, "Error: Failed to add teacher.");
+                        }
+                    }
+                });
+
+                // Create a panel to hold the components
+                JPanel addTeacherPanel = new JPanel(new GridLayout(8, 2));
+                addTeacherPanel.add(idLabel);
+                addTeacherPanel.add(idField);
+                addTeacherPanel.add(firstNameLabel);
+                addTeacherPanel.add(firstNameField);
+                addTeacherPanel.add(lastNameLabel);
+                addTeacherPanel.add(lastNameField);
+                addTeacherPanel.add(addressLabel);
+                addTeacherPanel.add(addressField);
+                addTeacherPanel.add(phoneNumLabel);
+                addTeacherPanel.add(phoneNumField);
+                addTeacherPanel.add(emailLabel);
+                addTeacherPanel.add(emailField);
+                addTeacherPanel.add(passwordLabel);
+                addTeacherPanel.add(passwordField);
+                addTeacherPanel.add(addTeacherButton);
+
+                // Add the addTeacherPanel to the addTeacherFrame
+                addTeacherFrame.add(addTeacherPanel);
+                addTeacherFrame.setVisible(true);
+            }
+        });
+
+        JButton addStudentButton = new JButton("Add Student");
+        rightPanel.add(addStudentButton);
+        addStudentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame addStudentFrame = new JFrame("Add Student");
+                addStudentFrame.setSize(400, 300);
+
+                // Create labels and text fields for teacher details
+                JLabel idLabel = new JLabel("Student ID:");
+                JTextField idField = new JTextField(20);
+
+                JLabel firstNameLabel = new JLabel("First Name:");
+                JTextField firstNameField = new JTextField(20);
+
+                JLabel lastNameLabel = new JLabel("Last Name:");
+                JTextField lastNameField = new JTextField(20);
+
+                JLabel addressLabel = new JLabel("Address:");
+                JTextField addressField = new JTextField(20);
+
+                JLabel phoneNumLabel = new JLabel("Phone Number:");
+                JTextField phoneNumField = new JTextField(20);
+
+                JLabel emailLabel = new JLabel("Email:");
+                JTextField emailField = new JTextField(20);
+
+                JLabel passwordLabel = new JLabel("Password:");
+                JPasswordField passwordField = new JPasswordField(20);
+
+                // Create a button for adding the teacher
+                JButton addStudentButton = new JButton("Add Student");
+
+                // Add action listener to the addTeacherButton to handle the addition of the new teacher
+                addStudentButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        // Get the values entered by the user
+                        String StudentID = idField.getText();
+                        String newFirstName = firstNameField.getText();
+                        String lastName = lastNameField.getText();
+                        String address = addressField.getText();
+                        String phoneNumber = phoneNumField.getText();
+                        String email = emailField.getText();
+                        String password = new String(passwordField.getPassword());
+                        String errorMessage = null;
+
+                        // Perform validation if needed
+
+                        // Add the teacher to the teacher table using the entered values
+                        try {
+                            // Establish a connection to the PostgreSQL database
+                            Connection connection = DriverManager.getConnection("jdbc:postgresql://dpg-clg52g7jc5ks73ebv3kg-a.singapore-postgres.render.com:5432/academicsysdb", "academicsysdb_user", "ZjIvqGcPMEmfe81jZZlNZVamy9XFvlL2");
+
+                            // Create a prepared statement for executing the SQL query
+                            String query = "INSERT INTO student (student_id, first_name, last_name, address, phone_num, email, password) " +
+                                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                            PreparedStatement preparedStatement = connection.prepareStatement(query);
+                            if(StudentID != null && InputValidation.checkStudentID(StudentID)){
+                                preparedStatement.setString(1, StudentID);
+                            }else{
+                                errorMessage = "Student ID must start with \"s\", followed by exactly 7 digits";
+                            }
+                            if (newFirstName != null && InputValidation.checkFirstName(newFirstName)) {
+                                preparedStatement.setString(2, newFirstName);
+                            }else{
+                                errorMessage = "First name only contain 1-20 character";
+                            }
+                            if (lastName != null && InputValidation.checkLastName(lastName)) {
+                                preparedStatement.setString(3, lastName);
+                            }else{
+                                errorMessage = "Last name only contain 1-20 character";
+                            }
+                            if (address != null && InputValidation.checkAddress(address)) {
+                                preparedStatement.setString(4, address);
+                            }else {
+                                errorMessage = "Address need to have exactly 1-50 number";
+                            }
+                            if (phoneNumber != null && InputValidation.checkPhoneNumber(phoneNumber)) {
+                                preparedStatement.setString(5, phoneNumber);
+                                preparedStatement.setBigDecimal(5, new BigDecimal(phoneNumber));
+                            }else {
+                                errorMessage = "Phone number need to have exactly 10 number";
+                            }
+                            if (email != null && InputValidation.checkEmail(email)) {
+                                preparedStatement.setString(6, email);
+                            }else {
+                                errorMessage = "Email only contain 1-50 character";
+                            }
+                            if (InputValidation.checkPassword(password)) {
+                                preparedStatement.setString(7, password);
+                            }else {
+                                errorMessage  = "Password need to have at least one lower case letter\n" +
+                                        "at least one upper case letter \n at least one number \n at least 8 character";
+                            }
+                            if(errorMessage == null){
+
+                                // Execute the SQL query
+                                preparedStatement.executeUpdate();
+
+                                // Close the prepared statement and the database connection
+                                preparedStatement.close();
+                                connection.close();
+
+                                ArrayList<String> student_id = DatabaseHelper.getStudentIDsFromDatabase();
+                                studentListPanel.removeAll();
+                                for(String sid : student_id){
+                                    JLabel student = new JLabel();
+                                    String studentTextFormat = "<html><font size ='4'> Student " + sid + "</font></html>";
+                                    studentListPanel.add(Box.createRigidArea(new Dimension(0, 1)));
+
+                                    student.setText(studentTextFormat);
+                                    student.setMinimumSize(new Dimension(200, 300));
+                                    student.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                                    studentListPanel.add(student);
+                                    student.addMouseListener(new MouseAdapter() { //click the course to see more detail
+                                        @Override
+                                        public void mouseClicked(MouseEvent e) {
+                                            DisplayProfileData displayStudentData = new DisplayProfileData(sid);
+                                            displayStudentData.setVisible(true);
+                                        }
+                                    });
+                                }
+                                studentListPanel.revalidate();
+                                studentListPanel.repaint();
+
+                                // Show a success message or perform any other necessary actions
+                                JOptionPane.showMessageDialog(addStudentFrame, "Student added successfully.");
+
+                            }else{
+                                JOptionPane.showMessageDialog(MainPanel.this, errorMessage, "Error", JOptionPane.PLAIN_MESSAGE);
+                            }
+                        } catch (SQLException ex) {
+                            // Handle any errors that may occur during the database operation
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(addStudentFrame, "Error: Failed to add Ss.");
+                        }
+
+
+                    }
+                });
+
+                // Create a panel to hold the components
+                JPanel addStudentPanel = new JPanel(new GridLayout(8, 2));
+                addStudentPanel.add(idLabel);
+                addStudentPanel.add(idField);
+                addStudentPanel.add(firstNameLabel);
+                addStudentPanel.add(firstNameField);
+                addStudentPanel.add(lastNameLabel);
+                addStudentPanel.add(lastNameField);
+                addStudentPanel.add(addressLabel);
+                addStudentPanel.add(addressField);
+                addStudentPanel.add(phoneNumLabel);
+                addStudentPanel.add(phoneNumField);
+                addStudentPanel.add(emailLabel);
+                addStudentPanel.add(emailField);
+                addStudentPanel.add(passwordLabel);
+                addStudentPanel.add(passwordField);
+                addStudentPanel.add(addStudentButton);
+
+                // Add the addTeacherPanel to the addTeacherFrame
+                addStudentFrame.add(addStudentPanel);
+                addStudentFrame.setVisible(true);
+            }
+        });
+
+        JButton deleteButton = new JButton("Delete by ID");
+        rightPanel.add(deleteButton);
+        deleteButton.addActionListener(e -> {
+            JFrame idFrame = new JFrame("Enter ID");
+            idFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            idFrame.setSize(300, 100);
+
+            JTextField idField = new JTextField();
+            idField.setPreferredSize(new Dimension(100, 25));
+
+            JButton confirmButton = new JButton("Confirm");
+            confirmButton.addActionListener(event -> {
+                String id = idField.getText();
+                idFrame.dispose(); // Close the ID entry frame
+
+                if (id.startsWith("s")) {
+                    // Delete row from the student table
+                    boolean deleted = deleteFromStudentTable(id);
+                    if (deleted) {
+                        ArrayList<String> studentID = DatabaseHelper.getStudentIDsFromDatabase();
+                        studentListPanel.removeAll();
+                        for(String sid : studentID){
+                            JLabel student = new JLabel();
+                            String studentTextFormat = "<html><font size ='4'> Student " + sid + "</font></html>";
+                            studentListPanel.add(Box.createRigidArea(new Dimension(0, 1)));
+
+                            student.setText(studentTextFormat);
+                            student.setMinimumSize(new Dimension(200, 300));
+                            student.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                            studentListPanel.add(student);
+                            student.addMouseListener(new MouseAdapter() { //click the course to see more detail
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+                                    DisplayProfileData displayStudentData = new DisplayProfileData(sid);
+                                    displayStudentData.setVisible(true);
+                                }
+                            });
+                        }
+                        studentListPanel.revalidate();
+                        studentListPanel.repaint();
+                        JOptionPane.showMessageDialog(null, "Row deleted successfully from student table!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No matching row found in student table!");
+                    }
+                } else if (id.startsWith("t")) {
+                    // Delete row from the teacher table
+                    boolean deleted = deleteFromTeacherTable(id);
+                    if (deleted) {
+                        ArrayList<String> teacherID = DatabaseHelper.getTeacherIDsFromDatabase();
+                        teacherPanel.removeAll();
+                        for(String tid : teacherID){
+                            JLabel teacher = new JLabel();
+                            String teacherTextFormat = "<html><font size ='4'> Student " + tid + "</font></html>";
+                            teacherPanel.add(Box.createRigidArea(new Dimension(0, 1)));
+
+                            teacher.setText(teacherTextFormat);
+                            teacher.setMinimumSize(new Dimension(200, 300));
+                            teacher.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+                            teacherPanel.add(teacher);
+                            teacher.addMouseListener(new MouseAdapter() { //click the course to see more detail
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+                                    DisplayProfileData displayStudentData = new DisplayProfileData(tid);
+                                    displayStudentData.setVisible(true);
+                                }
+                            });
+                        }
+                        teacherPanel.revalidate();
+                        teacherPanel.repaint();
+                        JOptionPane.showMessageDialog(null, "Row deleted successfully from teacher table!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No matching row found in teacher table!");
+                    }
+                } else {
+                    // Invalid ID format
+                    JOptionPane.showMessageDialog(null, "Invalid ID format!");
+                }
+            });
+
+            idFrame.getContentPane().setLayout(new FlowLayout());
+            idFrame.getContentPane().add(new JLabel("Enter ID:"));
+            idFrame.getContentPane().add(idField);
+            idFrame.getContentPane().add(confirmButton);
+
+            idFrame.setVisible(true);
+        });
+
+
+
         JLabel courseTitle = new JLabel("My course");
         courseTitle.setHorizontalAlignment(SwingConstants.CENTER);
         courseTitle.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -295,30 +752,29 @@ public class MainPanel extends JPanel {
         rightPanel.add(studentTitle, BorderLayout.NORTH);
 
         //panel contain course, teacher, student
-        JPanel bottomPanel = new JPanel(new FlowLayout());
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 3));
 
 
-        JPanel coursePanel = new JPanel(); //show course as vertical
+
         coursePanel.setLayout(new BoxLayout(coursePanel, BoxLayout.Y_AXIS));
 
         ArrayList<String> courseIDs = DatabaseHelper.getCourseIDsFromDatabase();
 
         //add the student all course panel
-        for (String courseID : courseIDs) {
+        for (int i = 0;i < courseIDs.size();i++) {
+            int j = i;
             JLabel course = new JLabel();
-            String courseTextFormat = "<html><font size ='4'> Course " + courseID + "</font></html>";
+            String courseTextFormat = "<html><font size ='4'> Course " + courseIDs.get(i) + "</font></html>";
             coursePanel.add(Box.createRigidArea(new Dimension(0, 1)));
 
             course.setText(courseTextFormat);
             course.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-
             course.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    ArrayList<String> courseTitles = DatabaseHelper.getCourseTitleFromDatabase();
 
-                    String courseName = "Course: ";
-                    String courseGrade = "this is " + courseID + " label";
-                    JOptionPane.showMessageDialog(MainPanel.this, courseGrade, courseName, JOptionPane.PLAIN_MESSAGE);//the course score will in this dialog
+                    JOptionPane.showMessageDialog(MainPanel.this,"course ID: "+ courseIDs.get(j) +"\nTitle: "+ courseTitles.get(j));
 
                 }
             });
@@ -331,7 +787,7 @@ public class MainPanel extends JPanel {
 
         //crate all student panel
         //show to list of student witch in the course
-        JPanel studentListPanel = new JPanel(); //show student in course as vertical
+
         studentListPanel.setLayout(new BoxLayout(studentListPanel, BoxLayout.Y_AXIS));
         ArrayList<String> studentIDs = DatabaseHelper.getStudentIDsFromDatabase();
 
@@ -347,9 +803,8 @@ public class MainPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     //teacher can modify student grade in the dialog
-                    String studentName = "student: ";
-                    String studentCourseGrade = "this is " + studentID + " label";
-                    JOptionPane.showMessageDialog(MainPanel.this, studentCourseGrade, studentName, JOptionPane.PLAIN_MESSAGE);//the course score will in this dialog
+                    DisplayProfileData displayStudentData = new DisplayProfileData(studentID);
+                    displayStudentData.setVisible(true);
 
                 }
             });
@@ -359,7 +814,7 @@ public class MainPanel extends JPanel {
         JScrollPane studentScrollPanel = new JScrollPane(studentListPanel); //let the panel can scroll
         studentScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        JPanel teacherPanel = new JPanel(); //show student in course as vertical
+
         teacherPanel.setLayout(new BoxLayout(teacherPanel, BoxLayout.Y_AXIS));
         ArrayList<String> teacherIDs = DatabaseHelper.getTeacherIDsFromDatabase();
 
@@ -375,9 +830,8 @@ public class MainPanel extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     //teacher can modify student grade in the dialog
-                    String studentName = "Teacher: ";
-                    String studentCourseGrade = "teacher";
-                    JOptionPane.showMessageDialog(MainPanel.this, studentCourseGrade, studentName, JOptionPane.PLAIN_MESSAGE);//the course score will in this dialog
+                    DisplayProfileData displayStudentData = new DisplayProfileData(teacherID);
+                    displayStudentData.setVisible(true);
 
                 }
             });

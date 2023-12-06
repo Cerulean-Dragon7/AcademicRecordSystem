@@ -79,6 +79,7 @@ public class LoginPanel extends JPanel {
                 String user = userText.getText();
                 String password = new String(passwordText.getPassword());
                 System.out.println("Username: " + user + " Password: " + password);
+                String errorMessage = null;
 
                 // Check login and password against the database
                 try {
@@ -105,7 +106,11 @@ public class LoginPanel extends JPanel {
                         adminResultSet.close();
                         adminStatement.close();
                         connection.close();
+                        userText.setText("");
+                        passwordText.setText("");
                         return;
+                    }else{
+                        errorMessage = "wrong User ID or Password";
                     }
 
                     // Check teacher table
@@ -127,7 +132,11 @@ public class LoginPanel extends JPanel {
                         teacherResultSet.close();
                         teacherStatement.close();
                         connection.close();
+                        userText.setText("");
+                        passwordText.setText("");
                         return;
+                    }else{
+                        errorMessage = "wrong User ID or Password";
                     }
 
                     // Check student table
@@ -149,7 +158,15 @@ public class LoginPanel extends JPanel {
                         studentResultSet.close();
                         studentStatement.close();
                         connection.close();
+                        userText.setText("");
+                        passwordText.setText("");
                         return;
+                    }else{
+                        errorMessage = "wrong User ID or Password";
+                    }
+
+                    if(errorMessage != null){
+                        JOptionPane.showMessageDialog(LoginPanel.this, errorMessage, "Error", JOptionPane.PLAIN_MESSAGE);
                     }
 
                     System.out.println("Invalid credentials!");
