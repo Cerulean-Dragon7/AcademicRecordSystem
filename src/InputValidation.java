@@ -21,7 +21,7 @@ public class InputValidation {
         return s.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
     public static boolean checkPassword(String s){
-        return s.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d).{8,20}$");
+        return s.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,20}$");
     }
     public static boolean checkScore(String s){
         return s.matches("^([1-9][0-9]?|100|0)$");

@@ -40,7 +40,7 @@ public class MainPanel extends JPanel {
 
             return rowsDeleted > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LogHandler.error(e);
             JOptionPane.showMessageDialog(null, "Error deleting row from student table: " + e.getMessage());
             return false;
         }
@@ -59,7 +59,7 @@ public class MainPanel extends JPanel {
 
             return rowsDeleted > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LogHandler.error(e);
             JOptionPane.showMessageDialog(null, "Error deleting row from teacher table: " + e.getMessage());
             return false;
         }
@@ -369,7 +369,7 @@ public class MainPanel extends JPanel {
                             String query = "INSERT INTO teacher (teacher_id, first_name, last_name, address, phone_num, email, password) " +
                                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
                             PreparedStatement preparedStatement = connection.prepareStatement(query);
-                            if(teacherID != null && InputValidation.checkStudentID(teacherID)){
+                            if(teacherID != null && InputValidation.checkTeacherID(teacherID)){
                                 preparedStatement.setString(1, teacherID);
                             }else{
                                 errorMessage = "Teacher ID must start with \"t\", followed by exactly 7 digits";
@@ -443,7 +443,7 @@ public class MainPanel extends JPanel {
                             }
                         } catch (SQLException ex) {
                             // Handle any errors that may occur during the database operation
-                            ex.printStackTrace();
+                            LogHandler.error(ex);
                             JOptionPane.showMessageDialog(addTeacherFrame, "Error: Failed to add teacher.");
                         }
                     }
@@ -605,7 +605,7 @@ public class MainPanel extends JPanel {
                             }
                         } catch (SQLException ex) {
                             // Handle any errors that may occur during the database operation
-                            ex.printStackTrace();
+                            LogHandler.error(ex);
                             JOptionPane.showMessageDialog(addStudentFrame, "Error: Failed to add Ss.");
                         }
 

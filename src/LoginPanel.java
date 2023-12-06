@@ -178,7 +178,7 @@ public class LoginPanel extends JPanel {
                     studentStatement.close();
                     connection.close();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    LogHandler.error(ex);
                 }
             }
         });
