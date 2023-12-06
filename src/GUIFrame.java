@@ -9,6 +9,7 @@ public class GUIFrame extends JFrame {
 
     //hi
     public GUIFrame() {
+
         setTitle("Academic Record System");
         //specifies the width and height of the window in pixels
         setSize(800, 700);
@@ -24,7 +25,12 @@ public class GUIFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        new GUIFrame();
+        try{
+            LogHandler.init();
+            new GUIFrame();
+        }catch (Exception e){
+            LogHandler.error(e);
+        }
     }
 
     public void changePanel(String name) {
