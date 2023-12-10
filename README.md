@@ -1,15 +1,13 @@
 # AcademicRecordSystem
 # testing data
+  -admin
 
 | id            | password      |
 | ------------- | ------------- | 
 | a2437483      |   mT79706m6   |
 | a3101286      |   jK764973ih  |
-  -admin
-    admin_id 1: a2437483
-    password 1: mT79706m6
-    admin_id 2: a3101286
-    password 2: jK764973ih
+
+
   -teacher
     teacher_id 1: s0019323
     password 1: mT797063345
