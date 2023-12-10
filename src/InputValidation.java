@@ -14,8 +14,8 @@ public class InputValidation {
     public static boolean checkAddress(String s){
         return s.matches("^.{1,50}$");
     }
-    public static boolean checkPhoneNumber(String s){
-        return s.matches("^\\\\d{10}$");
+    public static boolean checkPhoneNumber(String s) {
+        return s.matches("^\\d{8,10}$");
     }
     public static boolean checkEmail(String s){
         return s.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
