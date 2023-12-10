@@ -1,5 +1,20 @@
 # AcademicRecordSystem
-
+# testing data
+  -admin
+    admin_id 1: a2437483
+    password 1: mT79706m6
+    admin_id 2: a3101286
+    password 2: jK764973ih
+  -teacher
+    teacher_id 1: s0019323
+    password 1: mT797063345
+    teacher_id 2: s1270306
+    password 2: Gp4456944
+  -student
+    student_id 1: t9088541
+    password 1: Rn3554334
+    student_id 2: t4282311
+    password 2: Skk054884
 # rerun
   - Approach 1
     1. download jdk 19 from: https://www.oracle.com/java/technologies/javase/jdk19-archive-downloads.html
