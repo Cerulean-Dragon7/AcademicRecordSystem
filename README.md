@@ -1,5 +1,10 @@
 # AcademicRecordSystem
 # testing data
+
+| id            | password      |
+| ------------- | ------------- | 
+| a2437483      |   mT79706m6   |
+| a3101286      |   jK764973ih  |
   -admin
     admin_id 1: a2437483
     password 1: mT79706m6
