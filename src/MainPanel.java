@@ -393,12 +393,12 @@ public class MainPanel extends JPanel {
                                 preparedStatement.setString(5, phoneNumber);
                                 preparedStatement.setBigDecimal(5, new BigDecimal(phoneNumber));
                             }else {
-                                errorMessage = "Phone number need to have exactly 10 number";
+                                errorMessage = "Phone number need to have exactly 8-10 number";
                             }
                             if (email != null && InputValidation.checkEmail(email)) {
                                 preparedStatement.setString(6, email);
                             }else {
-                                errorMessage = "Email only contain 1-50 character";
+                                errorMessage = "Email only contain 1-50 character and must include @ character";
                             }
                             if (InputValidation.checkPassword(password)) {
                                 preparedStatement.setString(7, password);
@@ -553,12 +553,12 @@ public class MainPanel extends JPanel {
                                 preparedStatement.setString(5, phoneNumber);
                                 preparedStatement.setBigDecimal(5, new BigDecimal(phoneNumber));
                             }else {
-                                errorMessage = "Phone number need to have exactly 10 number";
+                                errorMessage = "Phone number need to have 8-10 number";
                             }
                             if (email != null && InputValidation.checkEmail(email)) {
                                 preparedStatement.setString(6, email);
                             }else {
-                                errorMessage = "Email only contain 1-50 character";
+                                errorMessage = "Email only contain 1-50 character and must include @ character";
                             }
                             if (InputValidation.checkPassword(password)) {
                                 preparedStatement.setString(7, password);
